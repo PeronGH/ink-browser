@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       'react-devtools-core': './src/compat/react-devtools-core.ts',
+      '#supports-color': './src/compat/supports-color.ts',
     },
   },
 });
