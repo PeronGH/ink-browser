@@ -1,11 +1,5 @@
 import EventEmitter from 'events';
 
-process.env = {
-  FORCE_COLOR: '3',
-  TERM: 'xterm-256color',
-  COLORTERM: 'truecolor',
-};
-
 // @ts-ignore
 class Stdin extends EventEmitter implements NodeJS.ReadStream {
   #buffer: string[] = [];
