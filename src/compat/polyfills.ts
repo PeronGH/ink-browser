@@ -1,35 +1,69 @@
 import EventEmitter from 'events';
 
-// @ts-ignore
-window.process ??= {};
-
 process.env = {
   FORCE_COLOR: '3',
   TERM: 'xterm-256color',
   COLORTERM: 'truecolor',
 };
 
-function createStream(): NodeJS.ReadStream | NodeJS.WriteStream {
-  const stream = new EventEmitter() as any;
-  stream.columns = 80;
-  stream.rows = 80;
-  stream.isTTY = true;
-  stream.setEncoding = () => {};
-  stream.setRawMode = () => {};
-  stream.resume = () => {};
-  stream.pause = () => {};
-  stream.getColorDepth = () => 256;
-  stream.hasColors = () => true;
+// @ts-ignore
+class Stdin extends EventEmitter implements NodeJS.ReadStream {
+  #buffer: string[] = [];
 
-  return stream;
+  constructor() {
+    super();
+    this.on('data', (data: string) => {
+      this.#buffer.push(data);
+      this.emit('readable');
+    });
+  }
+
+  get readable(): boolean {
+    return this.#buffer.length > 0;
+  }
+
+  read(size?: number): string | null {
+    if (this.#buffer.length === 0) {
+      return null;
+    }
+    const chunkSize =
+      size === undefined
+        ? this.#buffer.length
+        : Math.min(size, this.#buffer.length);
+    const chunk = this.#buffer.slice(0, chunkSize);
+    this.#buffer = this.#buffer.slice(chunkSize);
+
+    return chunk.join();
+  }
+
+  isTTY = true;
+
+  setRawMode(mode: boolean): this {
+    console.debug('Stdin.setRawMode', mode);
+    return this;
+  }
+  setEncoding(encoding?: BufferEncoding): this {
+    console.debug('Stdin.setEncoding', encoding);
+    return this;
+  }
+  ref(): this {
+    console.debug('Stdin.ref');
+    return this;
+  }
+  unref(): this {
+    console.debug('Stdin.unref');
+    return this;
+  }
 }
 
-const stdout = createStream();
 // @ts-ignore
-process.stdout = stdout;
-// @ts-ignore
-process.stderr = stdout;
+class Stdout extends EventEmitter implements NodeJS.WriteStream {
+  isTTY = true;
+}
 
-const stdin = createStream();
 // @ts-ignore
-process.stdin = stdin;
+process.stdin = new Stdin();
+// @ts-ignore
+process.stdout = new Stdout();
+// @ts-ignore
+process.stderr = process.stdout;

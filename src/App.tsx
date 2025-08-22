@@ -1,18 +1,48 @@
-import { Text } from 'ink';
-import { useEffect, useState } from 'react';
+import { Box, Text, useInput } from 'ink';
+import { useState } from 'react';
 
-export const App = () => {
-  const [counter, setCounter] = useState(0);
+let messageId = 0;
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCounter((previousCounter) => previousCounter + 1);
-    }, 100);
+export function App() {
+  const [input, setInput] = useState('');
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  const [messages, setMessages] = useState<
+    Array<{
+      id: number;
+      text: string;
+    }>
+  >([]);
 
-  return <Text color="green">{counter} tests passed</Text>;
-};
+  useInput((character, key) => {
+    if (key.return) {
+      if (input) {
+        setMessages((previousMessages) => [
+          ...previousMessages,
+          {
+            id: messageId++,
+            text: `User: ${input}`,
+          },
+        ]);
+        setInput('');
+      }
+    } else if (key.backspace || key.delete) {
+      setInput((currentInput) => currentInput.slice(0, -1));
+    } else {
+      setInput((currentInput) => currentInput + character);
+    }
+  });
+
+  return (
+    <Box flexDirection="column" padding={1}>
+      <Box flexDirection="column">
+        {messages.map((message) => (
+          <Text key={message.id}>{message.text}</Text>
+        ))}
+      </Box>
+
+      <Box marginTop={1}>
+        <Text>Enter your message: {input}</Text>
+      </Box>
+    </Box>
+  );
+}
