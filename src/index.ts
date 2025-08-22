@@ -17,6 +17,7 @@ if (rootEl) {
     fitAddon.fit();
     process.stdout.columns = term.cols;
     process.stdout.rows = term.rows;
+    process.stdout.emit('resize')
   };
   fitTerm();
   window.addEventListener('resize', fitTerm);
