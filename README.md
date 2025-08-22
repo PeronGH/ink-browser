@@ -1,36 +1,20 @@
-# Rsbuild project
+# Ink Browser
 
-## Setup
+Proof of Concept for npm:ink in the Browser
 
-Install the dependencies:
+## Try it out
 
-```bash
-pnpm install
+```sh
+bun i
+bun dev
 ```
 
-## Get started
+## Implementation Details
 
-Start the dev server, and the app will be available at [http://localhost:3000](http://localhost:3000).
+- We use `xterm.js` to provide a full terminal emulator in the browser.
+- We implement the subset of the `process.stdin` and `process.stdout` APIs required by `ink` by redirecting them to `xterm.js` (see `src/compat/polyfills.ts`).
+- We use `rsbuild` to apply the polyfills and replace the implementation of problematic Node.js packages (see `rsbuild.config.ts`).
 
-```bash
-pnpm dev
-```
+## Credits
 
-Build the app for production:
-
-```bash
-pnpm build
-```
-
-Preview the production build locally:
-
-```bash
-pnpm preview
-```
-
-## Learn more
-
-To learn more about Rsbuild, check out the following resources:
-
-- [Rsbuild documentation](https://rsbuild.rs) - explore Rsbuild features and APIs.
-- [Rsbuild GitHub repository](https://github.com/web-infra-dev/rsbuild) - your feedback and contributions are welcome!
+- <https://github.com/skorfmann/ink-storybook>
