@@ -8,7 +8,7 @@ import { App } from './App';
 
 const rootEl = document.getElementById('root');
 if (rootEl) {
-  const term = new Terminal({ convertEol: true, disableStdin: false });
+  const term = new Terminal({ convertEol: true });
   const fitAddon = new FitAddon();
   term.loadAddon(fitAddon);
   term.open(rootEl);
@@ -17,7 +17,7 @@ if (rootEl) {
     fitAddon.fit();
     process.stdout.columns = term.cols;
     process.stdout.rows = term.rows;
-    process.stdout.emit('resize')
+    process.stdout.emit('resize');
   };
   fitTerm();
   window.addEventListener('resize', fitTerm);
@@ -31,7 +31,7 @@ if (rootEl) {
   };
 
   render(React.createElement(App), {
-    debug: false,
+    exitOnCtrlC: false,
     patchConsole: false,
     isScreenReaderEnabled: false,
   });
