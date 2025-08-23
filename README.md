@@ -1,4 +1,4 @@
-# Ink Browser
+# `ink` in Browser
 
 Proof of Concept for npm:ink in the Browser
 
